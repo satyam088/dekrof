@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-900 text-white">
+    <div class="w-full min-h-screen bg-zinc-900 p-10 text-white">
+        <div class="logoutContainer flex justify-end">
+            <a href="/logout" class="text-end bg-red-500 px-3 py-2 rounded-md position-end">Logout</a>
+        </div>
+        <h1 class="font-bold text-3xl"> Hey , <%= user.name%></h1>
+        <h1 class="text-xl mt-3 mb-5">Create Post</h1>
+        <form action="/createPost" method="post" class="flex flex-col gap-2 ">
+            <textarea class="px-3 py-2 bg-transparent h-[200px] w-1/2 border-2 border-zinc-700 rounded-lg resize-none outline-none" name="content" id="content" placeholder="Write your thoughts here ..."></textarea>
+            <input class="px-3 py-2 w-1/2 font-bold bg-blue-700 rounded-md" type="submit" value="Post">
+        </form>
+        <div>
+            <h1 class="text-center font-bold text-2xl mt-10 border-t-2 border-zinc-700 py-3 ">Your Posts</h1>
+            <div class="allposts flex flex-wrap gap-3">
+                <%if(user.posts != null){%>
+                    <!-- I used reverse method here for loading recent posts first  -->
+                    <%user.posts.reverse().forEach((post)=>{%>
+                <div class="post w-[300px] h-[300px] border-2 border-zinc-700 p-2">
+                    <div class="content h-[250px] border-2 border-zinc-700 p-2">
+                        <h1 class="mb-2 font-bold text-blue-500">@<%=user.username%></h1>
+                        <p><%=post.content%></p>
+                    </div>
+                        <div class="options flex justify-evenly">
+                                <div class="likes">
+                                    <a href="/likePost/<%=post._id%>"><i class="fa-regular fa-heart text-2xl mr-2"></i><%=post.likes.length%></a> 
+                                </div>     
+                                <div class="comments">
+                                    <a href="/comment/<%=post._id%>"><i class="fa-regular fa-comment text-2xl mr-2"></i></a> 
+                                </div>
+                        </div>
+                </div>
+                    <%})%>
+                <%}%>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

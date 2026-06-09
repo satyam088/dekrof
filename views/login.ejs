@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="w-full min-h-screen bg-zinc-900 text-white p-10">
+        <h1 class=" font-bold text-3xl py-5">Mera SocialMedia</h1>
+        <h1 class="font-bold text-2xl py-3 text-center">LOGIN</h1>
+        <form action="/login" class="w-full flex flex-col items-center gap-2 " method="post">
+            <input class=" w-1/2 px-3 py-2 outline-none bg-transparent border -2 border-zinc-800 rounded-lg "  type="text" placeholder="email" name = "email">
+            <input class=" w-1/2 px-3 py-2 outline-none bg-transparent border -2 border-zinc-800 rounded-lg "  type="text" placeholder="Password" name = "password">
+            <input class=" w-96 px-3 py-2 my-3 outline-none  border -2 border-zinc-800 bg-blue-700 rounded-lg font-bold"  type="submit" value="SUBMIT">
+        </form>
+        <div class="flex justify-center py-3">
+            <a href="/register" class="text-center">Don't have an account, Register</a>
+        </div>
+    </div>
+</body>
+</html>
