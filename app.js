@@ -8,6 +8,8 @@ const userModel = require("./models/user");
 const postModel = require("./models/post");
 const commentModel = require("./models/comment");
 const multerconfig = require('./config/multerconfig');
+const upload = require('./config/multerconfig');
+const fs = require('fs');
 
 require('dotenv').config();
 connectDb();
@@ -15,6 +17,7 @@ connectDb();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
+app.use(express.static(path.join(__dirname , "public")));
 app.set('view engine','ejs');
 app.use(cookieParser());
 
@@ -23,14 +26,22 @@ app.get('/' ,isLoggedIn , async(req, res)=>{
     let user = await userModel.findOne({email : useremail});
     return res.render('index',{user});
 }); 
-app.get('/profile',isLoggedIn , async (req, res)=>{
-    let useremail = req.user.email;
-    // for now I am seprading the select and populate but we can write it together also as per needed in future ;c
-    let user = await userModel.findOne({email : useremail}).select("username name posts email");
+
+app.get('/view/:username',isLoggedIn , async (req, res)=>{
+    // for now I am seprading the select and populate but we can write it together also as per needed in future ;
+    let user = await userModel.findOne({username : req.params.username});
+    if(!user){
+        return res.redirect('/');
+    }
+    let curruser = await userModel.findOne({email : req.user.email});
     await user.populate('posts');  // populating posts in user object 
-    
-    return res.render('profile',{user});
+    return res.render('profile',{user , curruser});
 });
+
+app.get('/editProfile' , isLoggedIn , async(req,res)=>{
+    let user = await userModel.findOne({email : req.user.email});
+    return res.render('editProfile',{user});
+})
 
 app.get('/login',(req,res)=>{
     return res.render('login');
@@ -41,7 +52,7 @@ app.get('/register',(req, res)=>{
 
 app.get('/logout',(req, res)=>{
     res.cookie("token","");
-    res.redirect('/')
+    res.redirect('login')
 });
 
 app.get('/likePost/:postid' , isLoggedIn , async (req, res)=>{
@@ -60,9 +71,30 @@ app.get('/likePost/:postid' , isLoggedIn , async (req, res)=>{
         post.likes.push(user._id);
     }
     await post.save();
-    res.redirect('/profile');
+    return res.redirect(req.get('referer'));
 });
 
+app.post('/updateUser', isLoggedIn ,upload.single('image'), async (req, res)=>{
+    let user =  await userModel.findOne({email : req.user.email});
+    let image =  user.profilepic ;
+    // console.log(req.file);
+    let updateUser = await userModel.findOneAndUpdate({email : req.user.email} ,{
+        name : req.body.name,
+        email : req.body.email,
+        username : req.body.username ,
+        age : req.body.age ,
+        profilepic : req.file.filename,
+    });
+    // code for deleteing the previous existing file 
+    if(image !== "default.webp"){
+        const ImgPath = `./public/images/uploads/${image}` ;
+        if(fs.existsSync(ImgPath)){
+            await fs.promises.unlink(ImgPath);
+        }
+    }
+    return res.redirect(req.get('referer'));
+
+});
 app.post('/createUser',async (req, res )=>{
     console.log("Starting resistering");
     let {email , password , username , name , age } = req.body ;

@@ -12,14 +12,32 @@
         <div class="logoutContainer flex justify-end">
             <a href="/logout" class="text-end bg-red-500 px-3 py-2 rounded-md position-end">Logout</a>
         </div>
-        <h1 class="font-bold text-3xl"> Hey , <%= user.name%></h1>
+        <div class="alluserinfo flex gap-10">
+            <div class="profile w-20 h-20 rounded-full">
+                <img class="w-full h-full rounded-full object-cover" src="/images/uploads/<%=user.profilepic%>" alt="">
+            </div>
+            <div class="userInfo">
+                <h1 class="font-bold text-2xl text-blue-500">@<%=user.username%></h1>
+                <h1 class="font-bold text-2xl "><%=user.name%></h1>
+                <h1 class="font-bold text-2xl "><%=user.email%></h1>
+            </div>
+       </div>
+        
+        <%if(user.username === curruser.username){%>
+        <h1 class="font-bold text-3xl"> Hey , <%= curruser.name%></h1>
+        <div class="edit mt-3 text-yellow-500">
+            <a href="/editProfile">Edit Profile</a>
+        </div>
+
         <h1 class="text-xl mt-3 mb-5">Create Post</h1>
         <form action="/createPost" method="post" class="flex flex-col gap-2 ">
             <textarea class="px-3 py-2 bg-transparent h-[200px] w-1/2 border-2 border-zinc-700 rounded-lg resize-none outline-none" name="content" id="content" placeholder="Write your thoughts here ..."></textarea>
             <input class="px-3 py-2 w-1/2 font-bold bg-blue-700 rounded-md" type="submit" value="Post">
         </form>
         <div>
-            <h1 class="text-center font-bold text-2xl mt-10 border-t-2 border-zinc-700 py-3 ">Your Posts</h1>
+            <%}%>
+
+            <h1 class="text-center font-bold text-2xl mt-10 border-t-2 border-zinc-700 py-3 ">Posts</h1>
             <div class="allposts flex flex-wrap gap-3">
                 <%if(user.posts != null){%>
                     <!-- I used reverse method here for loading recent posts first  -->
@@ -32,7 +50,7 @@
                         <div class="options flex justify-evenly">
                                 <div class="likes">
                                     <a href="/likePost/<%=post._id%>">
-                                        <%if(post.likes.includes(user._id)){%>
+                                        <%if(post.likes.includes(curruser._id)){%>
                                         <i class="fa-solid fa-heart"></i>
                                         <%}else{%>
                                         <i class="fa-regular fa-heart"></i>

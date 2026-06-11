@@ -5,6 +5,10 @@ let userSchema = mongoose.Schema({
         type : String , 
         unique : true
     },
+    profilepic : {
+        type : String , 
+        default : "default.webp"
+    },
     name : String ,
     age : Number  ,
     email : {
