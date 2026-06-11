@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+    <!-- // This file is created for testing the multer to upoad media files from browser to server -->
+
+    <div class="w-full min-h-screen bg-zinc-900 text-white p-10">
+        <h1 class=" font-bold text-3xl py-5">Mera SocialMedia</h1>
+        <h1 class="font-bold text-2xl py-3 text-center">Upload your file</h1>
+        <form action="/upload" class="w-full flex flex-col items-center gap-2 " method="post" enctype="multipart/form-data">
+            <input type="file" name="image">
+            <input class=" w-96 px-3 py-2 my-3 outline-none  border -2 border-zinc-800 bg-blue-700 rounded-lg font-bold"  type="submit" value="Uppload File">
+        </form>
+    </div>
+</body>
+</html>

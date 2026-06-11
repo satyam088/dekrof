@@ -7,6 +7,7 @@ const connectDb = require('./config/db');
 const userModel = require("./models/user");
 const postModel = require("./models/post");
 const commentModel = require("./models/comment");
+const multerconfig = require('./config/multerconfig');
 
 require('dotenv').config();
 connectDb();
@@ -21,7 +22,7 @@ app.get('/' ,isLoggedIn , async(req, res)=>{
     let useremail = req.user.email;
     let user = await userModel.findOne({email : useremail});
     return res.render('index',{user});
-});
+}); 
 app.get('/profile',isLoggedIn , async (req, res)=>{
     let useremail = req.user.email;
     // for now I am seprading the select and populate but we can write it together also as per needed in future ;c
