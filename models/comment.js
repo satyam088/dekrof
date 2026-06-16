@@ -12,18 +12,10 @@ let commentSchema = mongoose.Schema({
     content : {
         type : String,
     },
-    likes :[
-        {
-            type : mongoose.Schema.Types.ObjectId,
-            ref : 'user',
-        }
-    ],
-    replies :[
-        {
-           type :  mongoose.Schema.Types.ObjectId,
-           ref : 'comment',
-        }
-    ]
+    post : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'post',
+    }
 });
 
 

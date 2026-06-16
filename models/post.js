@@ -9,6 +9,10 @@ let postSchema = mongoose.Schema({
         type : Date ,
         default : Date.now
     },
+    images : {
+        type : [imageSchema],
+        default :[]
+    } ,
     content : {
         type : String,
     },
@@ -18,13 +22,15 @@ let postSchema = mongoose.Schema({
             ref : 'user',
         }
     ],
-    comments :[
-        {
-           type :  mongoose.Schema.Types.ObjectId,
-           ref : 'comment',
-        }
-    ]
-});
+    likeCount:{
+        type : Number,
+        default : 0
+    },
+    commentCount : {
+        type :Number,
+        default : 0
+    }
+} , {timestamps: true});
 
 
 module.exports = mongoose.model('post',postSchema);
