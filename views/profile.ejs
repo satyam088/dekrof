@@ -3,38 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>dekrof</title>
+     <%- include('./partials/headerlinks')%>
 </head>
 <body class="bg-zinc-900 text-white">
     <div class="w-full min-h-screen bg-zinc-900 p-10 text-white">
-        <div class="logoutContainer flex justify-end">
-            <a href="/logout" class="text-end bg-red-500 px-3 py-2 rounded-md position-end">Logout</a>
-        </div>
-        <div class="alluserinfo flex gap-10">
+
+
+
+
+
+        <div class="alluserinfo flex gap-10 ">
             <div class="profile w-20 h-20 rounded-full">
                 <img class="w-full h-full rounded-full object-cover" src="/images/uploads/<%=user.profilepic%>" alt="">
             </div>
             <div class="userInfo">
-                <h1 class="font-bold text-2xl text-blue-500">@<%=user.username%></h1>
-                <h1 class="font-bold text-2xl "><%=user.name%></h1>
-                <h1 class="font-bold text-2xl "><%=user.email%></h1>
+                <h1 class="font-bold text-2xl "><%=user.username%></h1>
+                <h1 class="font-bold  "><%=user.name%></h1>
+                <div class="flex gap-2">
+                    <div class="postCount flex gap-2">
+                        <p class="font-bold"><%=user.posts.length%></p>
+                        <p> posts</p>
+                    </div>
+                    <div class="followersCount flex gap-2">
+                        <p class="font-bold">0</p>
+                        <p>  followers</p>
+                    </div>
+                    <div class="followingCount flex gap-2">
+                        <p class="font-bold">0</p>
+                        <p>  following</p>
+                    </div>
+                </div>
             </div>
        </div>
+       <div class="biosection mt-2">
+            Lorem ipsum dolor sit amet.
+        </div>
+       
         
         <%if(user.username === curruser.username){%>
-        <h1 class="font-bold text-3xl"> Hey , <%= curruser.name%></h1>
-        <div class="edit mt-3 text-yellow-500">
-            <a href="/editProfile">Edit Profile</a>
+        
+        <div class="otheroptions flex mt-3 gap-4">
+            <div class="edit  text-white rounded-md bg-zinc-700 px-10 py-2 font-bold">
+                <a href="/user/edit">Edit Profile</a>
+            </div>
+            <div class="createPost text-white rounded-md bg-zinc-700 px-10 py-2 font-bold">
+                <button class="font-bold">Create Post</button>
+            </div>
         </div>
 
-        <h1 class="text-xl mt-3 mb-5">Create Post</h1>
-        <form action="/createPost" method="post" class="flex flex-col gap-2 ">
+        <!-- <h1 class="text-xl mt-3 mb-5">Create Post</h1>
+        <form action="/post/create" method="post" class="flex flex-col gap-2 ">
             <textarea class="px-3 py-2 bg-transparent h-[200px] w-1/2 border-2 border-zinc-700 rounded-lg resize-none outline-none" name="content" id="content" placeholder="Write your thoughts here ..."></textarea>
             <input class="px-3 py-2 w-1/2 font-bold bg-blue-700 rounded-md" type="submit" value="Post">
         </form>
-        <div>
+        <div> -->
             <%}%>
 
             <h1 class="text-center font-bold text-2xl mt-10 border-t-2 border-zinc-700 py-3 ">Posts</h1>
@@ -49,7 +72,7 @@
                     </div>
                         <div class="options flex justify-evenly">
                                 <div class="likes">
-                                    <a href="/likePost/<%=post._id%>">
+                                    <a href="/like/<%=post._id%>">
                                         <%if(post.likes.includes(curruser._id)){%>
                                         <i class="fa-solid fa-heart"></i>
                                         <%}else{%>
@@ -59,10 +82,10 @@
                                     <%=post.likes.length%>
                                 </div>     
                                 <div class="comments">
-                                    <a href="/comment/<%=post._id%>"><i class="fa-regular fa-comment text-2xl mr-2"></i></a> 
+                                    <a href="/post/comment/<%=post._id%>"><i class="fa-regular fa-comment text-2xl mr-2"></i></a> 
                                 </div>
                                 <div class="edit">
-                                    <a href="/edit"></a>
+                                    <a href="/post/edit"></a>
                                 </div>
                         </div>
                 </div>

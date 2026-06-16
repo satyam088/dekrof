@@ -10,7 +10,7 @@
     <div class="w-full min-h-screen bg-zinc-900 text-white p-10">
         <h1 class=" font-bold text-3xl py-5">Mera SocialMedia</h1>
         <h1 class="font-bold text-2xl py-3 text-center">REGISTER</h1>
-        <form action="/createUser" class="w-full flex flex-col items-center gap-2 " method="post">
+        <form action="/user/create" class="w-full flex flex-col items-center gap-2 " method="post">
             <input class=" w-1/2 px-3 py-2 outline-none bg-transparent border -2 border-zinc-800 rounded-lg "  type="text" placeholder="Name" name = "name">
             <input class=" w-1/2 px-3 py-2 outline-none bg-transparent border -2 border-zinc-800 rounded-lg " type="text" placeholder="Username" name = "username">
             <input class=" w-1/2 px-3 py-2 outline-none bg-transparent border -2 border-zinc-800 rounded-lg "  type="text" placeholder="Password" name = "password">
@@ -19,7 +19,7 @@
             <input class=" w-96 px-3 py-2 my-3 outline-none  border -2 border-zinc-800 bg-blue-700 rounded-lg font-bold"  type="submit" value="Create Account">
         </form>
         <div class="flex justify-center py-3">
-            <a href="login" class="text-center">Already Have an account , Login</a>
+            <a href="/auth/login" class="text-center">Already Have an account , Login</a>
         </div>
     </div>
 </body>

@@ -16,12 +16,6 @@ let userSchema = mongoose.Schema({
         unique : true
     },
     password : String,
-    posts : [
-        {
-            type : mongoose.Schema.Types.ObjectId ,
-            ref : 'post',
-        }
-    ]
 });
 
 

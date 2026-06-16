@@ -1,0 +1,45 @@
+   <nav class="h-20 flex justify-between pt-3 ">
+
+            <div class="">
+                <img src="/assests/logo.png" alt="" class="h-full">
+            </div>
+
+            <div class="options flex items-center gap-6 mr-6">
+                <div class="home h-12 flex justify-center items-center">
+                    <a href="/home">
+                        <i class="fa-regular fa-house text-3xl"></i>
+                    </a>
+                </div>
+                <div class="msg h-12 flex justify-center items-center">
+                    <a href="/user/chats">
+                        <i class="fa-regular fa-message text-2xl"></i>
+                    </a>
+                </div>
+                <div class="create h-12 flex justify-center items-center">
+                    <button id="createPostBtn" class="currser-pointer">
+                        <i class="fa-solid fa-plus text-3xl"></i>
+                    </button>
+                </div>
+                <div class="search h-12 flex justify-center items-center">
+                    <a href="/search">
+                        <i class="fa-solid fa-magnifying-glass text-3xl"></i>
+                    </a>
+                </div>
+                <div class="notification h-12 flex justify-center items-center">
+                    <a href="/user/notifications">
+                        <i class="fa-regular fa-bell text-3xl"></i>
+                    </a>
+                </div>
+                <div class="profile h-10  w-10 border-2 border-zinc-500 rounded-full">
+                    <a href="/user/view/<%=user.username%>" class="">
+                        <img class="w-full h-full rounded-full" src="/images/uploads/<%=user.profilepic%>" alt="">
+                    </a>
+                </div>
+                <div class="notification h-12 flex justify-center items-center">
+                    <a href="/user/view/<%=user.username%>" class="">
+                        <i class="fa-solid fa-bars-staggered text-3xl"></i>
+                    </a>
+                </div>
+            </div>
+
+        </nav>

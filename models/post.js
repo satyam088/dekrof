@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+
+const imageSchema = new mongoose.Schema({
+  url: String,
+  filename: String
+});
+
+
 let postSchema = mongoose.Schema({
     user :{
         type : mongoose.Schema.Types.ObjectId ,
@@ -9,10 +16,10 @@ let postSchema = mongoose.Schema({
         type : Date ,
         default : Date.now
     },
-    images : {
-        type : [imageSchema],
-        default :[]
-    } ,
+    images: {
+        type: [imageSchema],
+        default: []
+    },
     content : {
         type : String,
     },
@@ -20,6 +27,12 @@ let postSchema = mongoose.Schema({
         {
             type : mongoose.Schema.Types.ObjectId,
             ref : 'user',
+        }
+    ],
+    comments :[
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'comment',
         }
     ],
     likeCount:{
