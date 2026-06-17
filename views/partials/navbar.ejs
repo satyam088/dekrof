@@ -16,7 +16,7 @@
                     </a>
                 </div>
                 <div class="create h-12 flex justify-center items-center">
-                    <button id="createPostBtn" class="currser-pointer">
+                    <button class="createPostBtn" class="currser-pointer">
                         <i class="fa-solid fa-plus text-3xl"></i>
                     </button>
                 </div>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="profile h-10  w-10 border-2 border-zinc-500 rounded-full">
                     <a href="/user/view/<%=user.username%>" class="">
-                        <img class="w-full h-full rounded-full" src="/images/uploads/<%=user.profilepic%>" alt="">
+                        <img class="w-full h-full rounded-full" src="<%= user.profilepic || 'https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781707471/default_rbs439.webp' %>" alt="">
                     </a>
                 </div>
                 <div class="notification h-12 flex justify-center items-center">

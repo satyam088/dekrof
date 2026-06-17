@@ -7,7 +7,7 @@ let userSchema = mongoose.Schema({
     },
     profilepic : {
         type : String , 
-        default : "default.webp"
+        default : 'https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781707471/default_rbs439.webp',
     },
     name : String ,
     age : Number  ,
@@ -16,6 +16,31 @@ let userSchema = mongoose.Schema({
         unique : true
     },
     password : String,
+    followers :[
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'user',
+        }
+    ],
+    followerCount :{
+        type : Number ,
+        default : 0,
+    },
+    following : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'user',
+        }
+    ],
+    followingCount :{
+        type : Number ,
+        default : 0,
+    },
+    postCount :{
+        type : Number ,
+        default : 0,
+    }
+
 });
 
 

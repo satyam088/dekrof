@@ -9,12 +9,55 @@ const userModel = require("../models/user");
 const postModel = require("../models/post");
 const commentModel = require("../models/comment");
 
-router.get('/' ,isLoggedIn , async(req, res)=>{
+// async function abc() {
+//     const users = await userModel.find();
+
+//     for (const user of users) {
+//         user.followers =[],
+//           user.followerCount =0;
+//             user.following =[];
+//             user.followingCount  =0 ;
+//             user.postCount =0;
+//         await user.save();
+//     }
+// }
+
+router.get('/',async (req,res)=>{
+    // await abc();
+    res.redirect('/home');
+})
+
+router.get('/home' ,isLoggedIn , async(req, res)=>{
     let useremail = req.user.email;
     let user = await userModel.findOne({email : useremail});
-    let posts = await postModel.find().limit(10).populate('user');
+    let posts = await postModel.find().limit(10).sort({createdAt : -1}).populate('user');
+    posts.forEach(post=>{
+        post.isLiked = post.likes.some(
+            likeId => likeId.toString() === user._id.toString()
+        );
+    });
+
     return res.render('index',{user , posts });
 }); 
+
+router.get('/feed', isLoggedIn , async (req, res)=>{
+    const page = Number(req.query.page) || 1;
+    const limit = 10;
+    try{
+        const posts = await postModel.find().sort({createdAt : -1}).skip((page -1)*limit).populate('user');
+
+        posts.forEach(post=>{
+            post.isLiked = post.likes.some(
+                likeId => likeId.toString() === user._id.toString()
+            );
+        });
+
+        return res.json(posts);
+    }catch(err){
+        return res.json({msg : "No more posts"});
+    }
+    
+});
 
 
 

@@ -1,0 +1,133 @@
+<main class="max-w-2xl mx-auto py-8 px-4 allposthere">
+
+        <% if(posts.length === 0){ %>
+
+            <div class="text-center mt-20">
+                <h2 class="text-2xl font-semibold">
+                    No posts yet
+                </h2>
+
+                <p class="text-zinc-400 mt-2">
+                    Follow users or create your first post.
+                </p>
+            </div>
+
+        <% }else{ %>
+            
+        <% posts.forEach(post => { %>
+
+            <article
+                class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden mb-6">
+
+                <div class="flex items-center gap-3 p-4">
+
+                    <a href="/user/view/<%= post.user.username %>">
+
+                        <img
+                            src="<%= post.user.profilepic || 'https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781707471/default_rbs439.webp' %>"
+                            class="w-12 h-12 rounded-full object-cover"
+                            alt="profile">
+
+                    </a>
+
+                    <div>
+                        <a
+                            href="/user/view/<%= post.user.username %>"
+                            class="font-semibold hover:text-blue-400">
+
+                            @<%= post.user.username %>
+
+                        </a>
+
+                        <p class="text-xs text-zinc-400">
+                            <%= new Date(post.createdAt).toLocaleDateString() %>
+                        </p>
+                    </div>
+
+                </div>
+
+                <% if(post.images.length > 0){ %> 
+                    <div class="relative group">
+                    
+                        <img
+                            src="<%= post.images[0].url%>"
+                            data-img-no="<%=0%>"
+                            data-images='<%- JSON.stringify(post.images) %>'
+                            alt="post image"
+                            class="w-full h-[500px] object-cover postimage">
+
+                        <% if(post.images.length > 1){%>
+                            <div class="absolute right-3 top-3 imageNodiv px-1 bg-zinc-900 rounded-lg">
+                                1/<%=post.images.length%>
+                            </div>
+                            <button
+                        class="prev-img-btn absolute left-3 top-1/2 -translate-y-1/2
+                            hidden group-hover:flex
+                            items-center justify-center
+                            w-10 h-10 rounded-full
+                            bg-black/50 text-white">
+                        ❮
+                             <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <button
+                        class="next-img-btn absolute right-3 top-1/2 -translate-y-1/2
+                            hidden group-hover:flex
+                            items-center justify-center
+                            w-10 h-10 rounded-full
+                            bg-black/50 text-white">
+                        ❯
+                            <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+                    <%}%>
+                <% } %>
+
+                <% if(post.content){ %>
+
+                    <div class="px-4 py-3">
+                        <p class="whitespace-pre-line">
+                            <%= post.content %>
+                        </p>
+                    </div>
+
+                <% } %>
+
+                <div
+                    class="flex items-center justify-between px-4 py-3 border-t border-zinc-800">
+
+                    <div class="flex items-center gap-6">
+
+                        <button
+                            class="likebtn flex items-center gap-2 hover:text-red-400" data-post-id="<%=post._id%>">
+                            <%if(post.isLiked){%>
+                            <i class="fa-solid fa-heart text-xl text-red-400"></i>
+                            <%}else{%>
+                            <i class="fa-regular fa-heart text-xl"></i>
+                            <%}%>
+                            <span>
+                                <%= post.likeCount%>
+                            </span>
+
+                        </button>
+                        <button
+                            class="flex commentbtn items-center gap-2 hover:text-blue-400">
+
+                            <i class="fa-regular fa-comment text-xl"></i>
+
+                            <span>
+                                <%= post.commentCount%>
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        <% }) %>
+        <%}%>
+        <div id="loader"></div>
+        </main>

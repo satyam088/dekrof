@@ -15,7 +15,7 @@ const userModel = require("../models/user");
 const postModel = require("../models/post");
 const commentModel = require("../models/comment");
 
-router.get('/like/:postid' , isLoggedIn , async (req, res)=>{
+router.post('/like/:postid' , isLoggedIn , async (req, res)=>{
     let post = await postModel.findOne({ _id : req.params.postid });
     let user = await userModel.findOne({ email : req.user.email});
     let alreadyLiked = post.likes.some(id =>{
@@ -27,11 +27,13 @@ router.get('/like/:postid' , isLoggedIn , async (req, res)=>{
         post.likes = post.likes.filter( id =>{
            return  !id.equals(user._id);
         }); 
+        post.likeCount = post.likes.length;
     }else{
         post.likes.push(user._id);
+        post.likeCount = post.likes.length;
     }
     await post.save();
-    return res.redirect(req.get('referer'));
+    res.json({msg :" post like updated Successfully"});
 });
 
 

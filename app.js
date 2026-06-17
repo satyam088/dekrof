@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const jwt = require('jsonwebtoken');
@@ -24,7 +25,6 @@ const postModel = require("./models/post");
 const commentModel = require("./models/comment");
 
 
-require('dotenv').config();
 connectDb();
 
 const app = express();
