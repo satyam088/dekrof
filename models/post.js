@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const imageSchema = new mongoose.Schema({
   url: String,
   filename: String
-});
+}, {_id : false});
 
 
 let postSchema = mongoose.Schema({

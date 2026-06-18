@@ -73,6 +73,8 @@ function handleNextImage(btn){
         if(currentIdx>=images.length){
             currentIdx = images.length -1  ;
         }
+        let imageNodiv = parent.querySelector('.imageNodiv');
+        imageNodiv.textContent = `${currentIdx+1}/${images.length}`;
         image.src = images[currentIdx].url ;
         image.dataset.imgNo = currentIdx ;
 }
@@ -86,6 +88,8 @@ function handlePrevImage(btn){
         if(currentIdx<0){
             currentIdx = 0 ;
         }
+        let imageNodiv = parent.querySelector('.imageNodiv');
+        imageNodiv.textContent = `${currentIdx+1}/${images.length}`;
         image.src = images[currentIdx].url ;
         image.dataset.imgNo = currentIdx ;
 }
@@ -137,8 +141,8 @@ function loadPost(posts){
             post.content="";
         }
         let likebtnContent = `<i class="fa-regular fa-heart text-xl"></i>`;
-        if(!post.user.profilepic){
-            post.user.profilepic = `https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781707471/default_rbs439.webp`;
+        if(!post.user.profilepic.url){
+            post.user.profilepic.url = `https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781797010/defalut_wc1tfy.webp`;
         }
         console.log(post.isLiked);
         if(post.isLiked){
@@ -204,7 +208,7 @@ function loadPost(posts){
                 <div class="flex items-center gap-3 p-4">
                     <a href="/user/view/${post.user.username }">
                         <img
-                            src="${post.user.profilepic}"
+                            src="${post.user.profilepic.url}"
                             class="w-12 h-12 rounded-full object-cover"
                             alt="profile">
                     </a>

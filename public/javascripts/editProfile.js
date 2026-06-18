@@ -12,5 +12,5 @@ input.addEventListener('change',(obj)=>{
 delprofilepic.addEventListener('click',async(dets)=>{
     dets.preventDefault();
     decision.name = "delete";
-    profilepic.src = 'https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781707471/default_rbs439.webp';
+    profilepic.src = 'https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781797010/defalut_wc1tfy.webp';
 })

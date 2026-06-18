@@ -62,7 +62,17 @@ router.post('/create',async (req, res )=>{
         return res.render('register',{msg : "username is alredy taken"});
     }else{
         let hashpass = await bcrypt.hash(password , 10);
-        let newUser = await userModel.create({email , password : hashpass , username , name , age});
+        let newUser = await userModel.create({
+            email ,
+            password : hashpass ,
+            username ,
+            name ,
+            age ,
+            profilepic :{
+                url : process.env.USER_DEFAULT_PIC,
+                filename : process.env.USER_DEFAULT_PIC_PUBLIC_ID
+            }
+            });
         let token = await jwt.sign({email , userid : newUser._id}, process.env.JWT_KEY);
         res.cookie("token",token);
         return res.redirect('/');    
@@ -71,22 +81,22 @@ router.post('/create',async (req, res )=>{
 
 router.post('/update', isLoggedIn ,upload.single('image'), uploadToCloudinary, async (req, res)=>{
     let user =  await userModel.findOne({email : req.user.email});
-
-    if(req.body.delete && user.profilepic != process.env.USER_DEFAULT_PIC ){
+    if(req.body.delete && user.profilepic.url != process.env.USER_DEFAULT_PIC ){
         await deleteFromCloudinary(user.profilepic);
         req.image = {};
-        req.image.url = process.env.USER_DEFAULT_PIC;
+        req.image = {
+            url : process.env.USER_DEFAULT_PIC,
+            filename : process.env.USER_DEFAULT_PIC_PUBLIC_ID ,
+        };
     }
     let updateUser = await userModel.findOneAndUpdate({email : req.user.email} ,{
         name : req.body.name,
         email : req.body.email,
         username : req.body.username ,
         age : req.body.age ,
-        profilepic : req.image.url,
+        profilepic : req.image,
     });
-    
     return res.redirect(`/user/view/${user.username}`);
-
 });
 
 router.get('/searchUsers' , isLoggedIn , async (req, res)=>{

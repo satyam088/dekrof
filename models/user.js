@@ -1,14 +1,16 @@
 const mongoose = require('mongoose');
 
+const imageSchema = new mongoose.Schema({
+  url: String,
+  filename: String
+}, {_id : false});
+
 let userSchema = mongoose.Schema({
     username : {
         type : String , 
         unique : true
     },
-    profilepic : {
-        type : String , 
-        default : 'https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781707471/default_rbs439.webp',
-    },
+    profilepic : imageSchema,
     name : String ,
     age : Number  ,
     email : {

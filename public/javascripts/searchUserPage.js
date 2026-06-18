@@ -21,7 +21,7 @@ usernameIp.addEventListener('input',async (e)=>{
                 userdiv.innerHTML = `
                     <div class="min-w-64 flex bg-zinc-700 px-4 py-4 rounded-3xl">
                             <div class="profilepic h-12 w-12 rounded-full mr-2">
-                                <img src="${user.profilepic}" alt="profilepic" class="w-full h-full object-cover rounded-full">
+                                <img src="${user.profilepic.url}" alt="profilepic" class="w-full h-full object-cover rounded-full">
                             </div>
                             <div>
                                 <a href="/user/view/${user.username}" class="text-blue-400">@${user.username}</a>

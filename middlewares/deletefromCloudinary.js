@@ -1,9 +1,9 @@
 const cloudinary = require('../config/cloudinary');
 
 
-const  deleteFromCloudinary = async (urlLink)=>{
-    if(urlLink && urlLink != process.env.USER_DEFAULT_PIC){
-        await cloudinary.uploader.destroy(urlLink);
+const  deleteFromCloudinary = async (profilepic)=>{
+    if(profilepic && profilepic.url != process.env.USER_DEFAULT_PIC){
+        await cloudinary.uploader.destroy(profilepic.filename);
         return ;
     }
     return ;

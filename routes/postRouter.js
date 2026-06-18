@@ -38,13 +38,11 @@ router.post('/like/:postid' , isLoggedIn , async (req, res)=>{
 
 
 router.post('/create', isLoggedIn , upload.array('images', 10), uploadToCloudinary, async (req, res)=>{
-    
-    const post = postModel.create({
+    const post = await postModel.create({
         content : req.body.content,
-        user : req.user.userid,
+        user : req.user._id,
         images : req.images,
-    })
-    
+    });
     return res.redirect(req.get('referer'));
 });
 
