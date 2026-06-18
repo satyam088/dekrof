@@ -10,7 +10,8 @@ const uploadToCloudinary = async (req, res, next) => {
         const result = await cloudinary.uploader.upload(
             req.file.path,
             {
-                folder: 'dekrof/posts'
+                folder: 'dekrof/posts',
+                format: "webp"
             }
         );
         req.image = {
@@ -28,7 +29,8 @@ const uploadToCloudinary = async (req, res, next) => {
             const result = await cloudinary.uploader.upload(
                 file.path,
                 {
-                    folder: 'dekrof/posts'
+                    folder: 'dekrof/posts',
+                    format: "webp"
                 }
             );
             req.images.push({
