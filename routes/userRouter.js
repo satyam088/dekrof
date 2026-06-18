@@ -11,6 +11,7 @@ const bcrypt = require('bcrypt');
 const userModel = require("../models/user");
 const postModel = require("../models/post");
 const commentModel = require("../models/comment");
+const user = require('../models/user');
 
 router.get('/edit' , isLoggedIn , async(req,res)=>{
     let user = await userModel.findOne({email : req.user.email});
@@ -34,6 +35,17 @@ router.get('/view/:username',isLoggedIn , async (req, res)=>{
     return res.render('profile',{user , curruser , posts});
 });
 
+router.get('/search/:username', isLoggedIn , async (req, res , next)=>{
+    // using .lean() to convert mongoose user object , to a plain JS object 
+    let user = await userModel.findOne({username : req.params.username}).select('name username profilepic').lean();
+    if(!user){
+        return res.status(404).json({found : false});
+    }else{
+        user.found = true ;
+        return res.status(200).json(user);
+    }
+    return next();
+})
 
 
 router.post('/create',async (req, res )=>{
@@ -77,6 +89,10 @@ router.post('/update', isLoggedIn ,upload.single('image'), uploadToCloudinary, a
 
 });
 
+router.get('/searchUsers' , isLoggedIn , async (req, res)=>{
+    let users = await userModel.find().sort({_id : -1}).limit(10).select('username  name  profilepic');
+    res.render('searchUserPage',{users});
+});
 
 
 module.exports = router ;

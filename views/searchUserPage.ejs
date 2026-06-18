@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('./partials/headerlinks')%>
+</head>
+<body>
+    <div class="w-full min-h-screen bg-zinc-900 flex flex-col items-center text-white">
+        <div class="self-start px-10 py-5 ">
+            <a href="/home" class="text-blue-400">return to home page</a>
+        </div>
+        <%- include('./partials/searchbar') %>
+        <div class="allusers flex flex-col items-center gap-5 border-t-2 border-zinc-700 w-full mx-10 py-10"> 
+        <%if(users && users.length){%>
+            <h1 class="font-bold">recent joined users</h1>
+            <%users.forEach(user=>{%>
+                <div class=" flex bg-zinc-700 px-4 py-4 rounded-3xl  min-w-64">
+                    <div class="profilepic h-12 w-12 rounded-full mr-2">
+                        <img src="<%=user.profilepic%>" alt="profilepis" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <div>
+                        <a href="/user/view/<%=user.username%>" class="text-blue-400">@<%=user.username%></a>
+                        <p class="font-bold"><%=user.name%></p>
+                    </div>
+                </div>
+            <%});%>
+        <%}else{%>
+            <h1>no users</h1>
+            <%}%>
+        </div>
+   </div>
+    <script src="/javascripts/searchUserPage.js"></script>
+</body>
+</html>
