@@ -21,7 +21,7 @@ router.get('/edit' , isLoggedIn , async(req,res)=>{
 
 router.get('/view/:username',isLoggedIn , async (req, res)=>{
     // for now I am seprading the select and populate but we can write it together also as per needed in future ;
-    let user = await userModel.findOne({username : req.params.username});
+    let user = await userModel.findOne({username : req.params.username}).select('-password').lean();
     if(!user){
         return res.redirect('/xyz');
     }
@@ -32,7 +32,13 @@ router.get('/view/:username',isLoggedIn , async (req, res)=>{
             likeId => likeId.toString() === user._id.toString()
         );
     });
-    return res.render('profile',{user , curruser , posts});
+    let isFollowing = user.followers.some(
+        id => id.equals(curruser._id)
+    );
+    delete user.followers;
+    delete user.following;
+    
+    return res.render('profile',{user , curruser , posts , isFollowing});
 });
 
 router.get('/search/:username', isLoggedIn , async (req, res , next)=>{
@@ -97,6 +103,56 @@ router.post('/update', isLoggedIn ,upload.single('image'), uploadToCloudinary, a
         profilepic : req.image,
     });
     return res.redirect(`/user/view/${user.username}`);
+});
+
+router.post('/follow/:username', isLoggedIn , async (req, res)=>{
+    let curruser = await userModel.findOne({email : req.user.email});
+    let user = await userModel.findOne({username : req.params.username});
+    if(!user){
+        return res.status(404).json({msg : "No such user"});
+    }
+
+    let isFollowing = user.followers.some((userid)=>{
+        return userid.equals(curruser._id);
+    });
+
+    if(isFollowing){
+        user.followers = user.followers.filter((id)=>{
+            return id.toString() !== curruser._id.toString() ;
+        });
+        curruser.following = curruser.following.filter(
+            id => id.toString() !==user._id.toString()
+        );
+    }else{
+        user.followers.push(curruser._id);
+        curruser.following.push(user._id);
+    }
+    user.followerCount = user.followers.length ;
+    curruser.followingCount = curruser.following.length ;
+    await user.save();
+    await curruser.save();
+    res.status(200).json({msg : isFollowing ? 'unfollowed': 'followed'});
+    
+});
+
+router.get('/posts/:userid', isLoggedIn , async (req, res)=>{
+    const page = Number(req.query.page) || 1;
+        const limit = 10;
+        try{
+            const posts = await postModel.find({user :req.params.userid }).sort({createdAt : -1}).skip((page -1)*limit).populate('user','username profilepic name email _id').lean();
+    
+            posts.forEach(post=>{
+                post.isLiked = post.likes.some(
+                    likeId => likeId.toString() === req.user._id.toString()
+                );
+                post.curruser = req.user.username;
+            });
+    
+            return res.json(posts);
+        }catch(err){
+            console.log(err.message);
+            return res.json({msg : "No more posts"});
+        }
 });
 
 router.get('/searchUsers' , isLoggedIn , async (req, res)=>{

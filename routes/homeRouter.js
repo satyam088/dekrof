@@ -44,16 +44,18 @@ router.get('/feed', isLoggedIn , async (req, res)=>{
     const page = Number(req.query.page) || 1;
     const limit = 10;
     try{
-        const posts = await postModel.find().sort({createdAt : -1}).skip((page -1)*limit).populate('user');
+        const posts = await postModel.find().sort({createdAt : -1}).skip((page -1)*limit).populate('user','username profilepic name email _id').lean();
 
         posts.forEach(post=>{
             post.isLiked = post.likes.some(
-                likeId => likeId.toString() === user._id.toString()
+                likeId => likeId.toString() === req.user._id.toString()
             );
+            post.curruser = req.user.username;
         });
 
         return res.json(posts);
     }catch(err){
+        console.log(err.message);
         return res.json({msg : "No more posts"});
     }
     

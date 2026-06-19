@@ -21,19 +21,19 @@
                 <img class="w-full h-full rounded-full object-cover" src="<%= user.profilepic.url || 'https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781797010/defalut_wc1tfy.webp' %>" alt="">
             </div>
             <div class="userInfo">
-                <h1 class="font-bold text-2xl "><%=user.username%></h1>
+                <h1 class="font-bold username text-2xl "><%=user.username%></h1>
                 <h1 class="font-bold  "><%=user.name%></h1>
                 <div class="flex gap-2">
-                    <div class="postCount flex gap-2">
-                        <p class="font-bold">0</p>
+                    <div class=" flex gap-2">
+                        <p class="postCount font-bold"><%=user.postCount%></p>
                         <p> posts</p>
                     </div>
-                    <div class="followersCount flex gap-2">
-                        <p class="font-bold">0</p>
+                    <div class=" flex gap-2">
+                        <p class="font-bold followersCount"><%=user.followerCount%></p>
                         <p>  followers</p>
                     </div>
-                    <div class="followingCount flex gap-2">
-                        <p class="font-bold">0</p>
+                    <div class=" flex gap-2">
+                        <p class="font-bold followingCount"><%=user.followingCount%></p>
                         <p>  following</p>
                     </div>
                 </div>
@@ -61,11 +61,13 @@
             <%}else{%>
             <div class="otheroptions flex mt-3 gap-4 ml-10">
                     <div class="edit  text-white rounded-md bg-zinc-700 px-10 py-2 font-bold">
-                        <%if(user.doFollow){%>
-                        <button>following</button>
-                        <%}else{%>
-                        <button>follow</button>
-                        <%}%>
+                        <button class="followToggle">
+                            <%if(isFollowing){%>
+                            following
+                            <%}else{%>
+                            follow
+                            <%}%>
+                        </button>
                     </div>
                     <div class=" text-white rounded-md bg-zinc-700 px-10 py-2 font-bold">
                         <button class="font-bold createPostBtn">message</button>
@@ -74,9 +76,12 @@
             <%}%>
 
             <h1 class="text-center font-bold text-2xl mt-10 border-t-2 border-zinc-700 py-3 ">Posts</h1>
-            <%- include('./partials/loadPosts')%>
+            <!-- <%- include('./partials/loadPosts')%> -->
+             <div class="max-w-2xl mx-auto py-8 px-4 allposthere"></div>
+            <div id="userPostsLoder" data-user-id ='<%=user._id%>'></div>
         </div>
     </div>
     <script src="/javascripts/index.js"></script>
+    <script src="/javascripts/profile.js"></script>
 </body>
 </html>

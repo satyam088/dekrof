@@ -6,7 +6,14 @@ const createpostform = document.querySelector('.createpostform');
 const previousImageButtons = document.querySelectorAll('.prev-img-btn');
 // const nextImageButtons = document.querySelectorAll('.next-img-btn');
 const loder = document.querySelector('#loader');
+const userPostsLoder = document.querySelector('#userPostsLoder');
+
 const allposthere = document.querySelector('.allposthere');
+const uploadPostbtn = document.querySelector('.uploadPostbtn');
+const uploadPostForm = document.querySelector('.uploadPostForm');
+const images = document.querySelector("#images");
+const formErrorMsg = document.querySelector('.formErrorMsg');
+const content = document.querySelector('.content');
 
 imageInput.addEventListener('change', () => {
     previewContainer.innerHTML = '';
@@ -94,12 +101,43 @@ function handlePrevImage(btn){
         image.dataset.imgNo = currentIdx ;
 }
 
+async function handelPostDelete(deletePostBtn){
+    const postId = deletePostBtn.dataset.postId;
+    try{
+        let response = await fetch(`/post/delete/${postId}`,{method : 'post'});
+        deletePostBtn.disabled = true;
+    }catch(err){
+        console.log("Failed to Delete post");
+    }
+    window.location.reload();
+    return ;
+}
+uploadPostForm.addEventListener('submit' , (e)=>{
+    console.log('clicked');
+    formErrorMsg.innerHTML = "";
+
+    if(images.files.length == 0 && content.value.trim()===""){
+        console.log("prevent defaluted");
+        e.preventDefault();
+        let p = document.createElement('p');
+        p.textContent = "Please writes something or upload a picture";
+        formErrorMsg.appendChild(p);
+        return ;
+    }
+    setTimeout(()=>{
+        uploadPostbtn.disabled = true;
+    },10000);
+});
 
 document.addEventListener('click', async (e) => {
 
     const likebtn = e.target.closest('.likebtn');
     if(likebtn){
+        likebtn.disabled = true ;
         await handleLike(likebtn);
+        setTimeout(()=>{
+            likebtn.disabled = false;
+        },2000);
         return;
     }
 
@@ -111,6 +149,7 @@ document.addEventListener('click', async (e) => {
 
     const nextbtn = e.target.closest('.next-img-btn');
     if(nextbtn){
+
          handleNextImage(nextbtn);
         return;
     }
@@ -122,13 +161,19 @@ document.addEventListener('click', async (e) => {
         return;
     }
 
+    const deletePostBtn = e.target.closest('.deletePostBtn');
+
+    if(deletePostBtn){
+        await handelPostDelete(deletePostBtn);
+        return;
+    }
+
 });
 
 
 
 createPostBtn.forEach(btn =>{
     btn.addEventListener('click',()=>{
-    console.log("HEEEY");
     createpostform.classList.toggle('hidden');
 });
 });
@@ -144,7 +189,6 @@ function loadPost(posts){
         if(!post.user.profilepic.url){
             post.user.profilepic.url = `https://res.cloudinary.com/dafdap5cr/image/upload/q_auto/f_auto/v1781797010/defalut_wc1tfy.webp`;
         }
-        console.log(post.isLiked);
         if(post.isLiked){
             likebtnContent =`
                 <i class="fa-solid fa-heart text-xl text-red-400"></i>             
@@ -200,6 +244,19 @@ function loadPost(posts){
                 </div>
             `
         }
+        
+        let  deletepostBtnDiv ='';
+        
+        if(post.user.username.toString().trim()===post.curruser.toString().trim()){
+            deletepostBtnDiv= `
+            <div class="flex justify-center items-center text-red-500 ml-auto mr-5">
+                <button class="deletePostBtn" data-post-id="${post._id}">
+                    <i class="fa-solid fa-trash-can text-red-500"></i>
+                </button>
+            </div>
+            `;
+        }
+        // console.log(deletepostBtnDiv);
 
         let article = document.createElement('article');
         article.innerHTML = `
@@ -222,6 +279,7 @@ function loadPost(posts){
                              ${postCreationDate}
                         </p>
                     </div>
+                    ${deletepostBtnDiv}
                 </div>
 
                 ${hasImages}
@@ -260,7 +318,7 @@ function loadPost(posts){
 
 
 
-let page = 2;
+let page = 1;
 
 
 const observer = new IntersectionObserver(
@@ -276,4 +334,20 @@ const observer = new IntersectionObserver(
     }
 );
 
-observer.observe(loader);
+const userposts= new IntersectionObserver(
+    async (entries) =>{
+        if(entries[0].isIntersecting){
+            const id = userPostsLoder.dataset.userId;
+            const response = await fetch(`/user/posts/${id}?page=${page}`);
+            const posts = await response.json();
+            page++;
+            loadPost(posts);
+        }
+    }
+);
+if(loder){
+    observer.observe(loader);
+}
+if(userPostsLoder){
+    userposts.observe(userPostsLoder);
+}
