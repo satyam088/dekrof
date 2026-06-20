@@ -271,7 +271,7 @@ function loadPost(posts){
                     </a>
                     <div>
                         <a
-                            href="/user/view/${post.user}"
+                            href="/user/view/${post.user.username}"
                             class="font-semibold hover:text-blue-400">
                             @${post.user.username}
                         </a>
