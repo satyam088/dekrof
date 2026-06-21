@@ -259,9 +259,9 @@ function loadPost(posts){
         // console.log(deletepostBtnDiv);
 
         let article = document.createElement('article');
+        article.className = `bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden mb-6`;
         article.innerHTML = `
-            <article
-                class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden mb-6">
+
                 <div class="flex items-center gap-3 p-4">
                     <a href="/user/view/${post.user.username }">
                         <img

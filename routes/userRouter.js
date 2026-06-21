@@ -160,5 +160,29 @@ router.get('/searchUsers' , isLoggedIn , async (req, res)=>{
     res.render('searchUserPage',{users});
 });
 
+router.get('/followers/:username',isLoggedIn , async (req, res)=>{
+    try{
+        let user = await userModel.findOne({username : req.params.username})
+        .select('name username profilepic  followers')
+        .populate('followers','name username profilepic');
+        return res.status(200).render('followers', {user});
+    }catch(err){
+        console.log(err.message);
+    }
+});
+
+router.get('/following/:username',isLoggedIn , async (req, res)=>{
+    try{
+        let user = await userModel.findOne({username : req.params.username})
+        .select('name username profilepic following')
+        .populate('following','name username profilepic');
+
+        return res.status(200).render('following', {user});
+    }catch(err){
+        console.log(err.message);
+        res.redirect(req.get('referer'));
+    }
+});
+
 
 module.exports = router ;

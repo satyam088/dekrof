@@ -30,11 +30,11 @@
                     </div>
                     <div class=" flex gap-2">
                         <p class="font-bold followersCount"><%=user.followerCount%></p>
-                        <p>  followers</p>
+                        <a href="/user/followers/<%=user.username%>">followers</a>
                     </div>
                     <div class=" flex gap-2">
                         <p class="font-bold followingCount"><%=user.followingCount%></p>
-                        <p>  following</p>
+                        <a href="/user/following/<%=user.username%>">following</a>
                     </div>
                 </div>
             </div>
