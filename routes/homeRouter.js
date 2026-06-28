@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt');
 const userModel = require("../models/user");
 const postModel = require("../models/post");
 const commentModel = require("../models/comment");
+const messageModel = require('../models/message');
+const conversation = require('../models/conversation');
 
 // async function abc() {
 //     const users = await userModel.find();
@@ -59,6 +61,14 @@ router.get('/feed', isLoggedIn , async (req, res)=>{
         return res.json({msg : "No more posts"});
     }
     
+});
+
+router.get('/messages', isLoggedIn , async (req, res)=>{
+    let user = await userModel.findOne({ email : req.user.email}).populate('followers following');
+    let Chatusers = conversation.find({participants : user._id}).limit(20).sort({updatedAt : -1 });
+    
+    // console.log(chatusers);
+    res.render('chats');
 });
 
 

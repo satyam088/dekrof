@@ -1,5 +1,7 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http');
+const { Server } = require("socket.io");
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -28,6 +30,9 @@ const commentModel = require("./models/comment");
 connectDb();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 app.use(express.static(path.join(__dirname , "public")));
@@ -50,9 +55,18 @@ app.use('/comment',commentRouter);
 app.use('/image',imageRouter);
 app.use('/admin',adminRouter);
 
+io.on('connection',(socket)=>{
+    console.log("triggered");
+    socket.on('chat message',(msg)=>{
+        console.log(msg);
+        io.emit('chat message', msg);
+    })
+    
+});
+
 
 const notfound = require('./middlewares/notFound');
 
 app.use(notfound);
 
-app.listen(3000 , ()=>{ console.log("Server running")});
+server.listen(3000 , ()=>{ console.log("Server running")});
