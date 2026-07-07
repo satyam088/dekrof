@@ -15,30 +15,33 @@ const images = document.querySelector("#images");
 const formErrorMsg = document.querySelector('.formErrorMsg');
 const content = document.querySelector('.content');
 
-imageInput.addEventListener('change', () => {
-    previewContainer.innerHTML = '';
-    [...imageInput.files].forEach(file => {
+if(imageInput){
+    imageInput.addEventListener('change', () => {
+        previewContainer.innerHTML = '';
+        [...imageInput.files].forEach(file => {
 
-        const reader = new FileReader();
+            const reader = new FileReader();
 
-        reader.onload = e => {
+            reader.onload = e => {
 
-            const img = document.createElement('img');
+                const img = document.createElement('img');
 
-            img.src = e.target.result;
+                img.src = e.target.result;
 
-            img.className =
-                'w-full h-40 object-cover rounded-xl';
+                img.className =
+                    'w-full h-40 object-cover rounded-xl';
 
-            previewContainer.appendChild(img);
+                previewContainer.appendChild(img);
 
-        };
+            };
 
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+
+        });
 
     });
+}
 
-});
 
 async function handleLike(likebtn){
         let icon = likebtn.querySelector('i');
@@ -112,7 +115,8 @@ async function handelPostDelete(deletePostBtn){
     window.location.reload();
     return ;
 }
-uploadPostForm.addEventListener('submit' , (e)=>{
+if(uploadPostForm){
+    uploadPostForm.addEventListener('submit' , (e)=>{
     console.log('clicked');
     formErrorMsg.innerHTML = "";
 
@@ -128,6 +132,7 @@ uploadPostForm.addEventListener('submit' , (e)=>{
         uploadPostbtn.disabled = true;
     },10000);
 });
+}
 
 document.addEventListener('click', async (e) => {
 

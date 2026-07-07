@@ -5,9 +5,13 @@ const chat_messages = document.querySelector('.chat_messages');
 
 form.addEventListener('submit', (e)=>{
     e.preventDefault();
-    if(message.value){
+    if(message.value.trim()){
         console.log('I sent ', message.value);
-        socket.emit('chat message' , message.value);
+        socket.emit('chat message' , {
+            conversation ,
+            receiver ,
+            message : message.value
+        });
         message.value = '';
     }
 });

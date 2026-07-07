@@ -11,6 +11,10 @@ const bcrypt = require('bcrypt');
 const userModel = require("../models/user");
 const postModel = require("../models/post");
 const commentModel = require("../models/comment");
+const conversationModel = require("../models/conversation");
+const messageModel = require("../models/message");
+
+
 const user = require('../models/user');
 
 router.get('/edit' , isLoggedIn , async(req,res)=>{
@@ -183,6 +187,8 @@ router.get('/following/:username',isLoggedIn , async (req, res)=>{
         res.redirect(req.get('referer'));
     }
 });
+
+
 
 
 module.exports = router ;

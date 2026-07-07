@@ -9,7 +9,7 @@ const userModel = require("../models/user");
 const postModel = require("../models/post");
 const commentModel = require("../models/comment");
 const messageModel = require('../models/message');
-const conversation = require('../models/conversation');
+const conversationModel = require('../models/conversation');
 
 // async function abc() {
 //     const users = await userModel.find();
@@ -64,15 +64,49 @@ router.get('/feed', isLoggedIn , async (req, res)=>{
 });
 
 router.get('/messages', isLoggedIn , async (req, res)=>{
-    let user = await userModel.findOne({ email : req.user.email}).populate('followers following');
-    let Chatusers = conversation.find({participants : user._id}).limit(20).sort({updatedAt : -1 });
-    
+    console.log("At messages");
+    let user = await userModel.findOne({ email : req.user.email}).select('-followers -following');
+    let Chatusers = conversationModel.find({participants : user._id}).limit(20).sort({updatedAt : -1 });
+    res.render('chats', {Chatusers});
     // console.log(chatusers);
-    res.render('chats');
 });
 
+router.get('/messages/:username', isLoggedIn , async (req, res) =>{
+    console.log("Malik chat khol do ");
+    let user = await userModel.findOne({ email : req.user.email}).select('-followers -following');
+    let userToChatWith = await userModel.findOne({ username : req.params.username});
+    if(!userToChatWith){
+        console.log('are galat user hai');
+        res.redirect(req.get('referer'));
+        return ;
+    }else{
+        console.log("User to theek lag rha hai");
+        let conversation = await conversationModel.findOne({
+            // write from chatgpt to ensure that there is only one to one conversation exists
+            participants :{
+                $all : [user._id , userToChatWith._id ]
+            },
+            $expr: {
+                $eq: [{ $size: "$participants" }, 2]
+            }
+        });
+        if(!conversation){
+            let newConversation = await conversationModel.create({
+                participants : [req.user._id , userToChatWith._id],
+            });
+        }                    
+    }
+     let Chatusers = await conversationModel.find({participants : user._id}).limit(20).sort({updatedAt : -1 });
+        console.log("YAHA TAK PAHUCH GYE MALIK < MESSAGE : /username");
+        try{
+            res.render('chats',{Chatusers , userToChatWith});
+            console.log("Render ho gya messages > chat with user");
+            return ;
+        }catch(err){
+            console.log(err.message);
+        }
 
-
+});
 
 
 

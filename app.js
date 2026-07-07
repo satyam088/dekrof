@@ -55,13 +55,15 @@ app.use('/comment',commentRouter);
 app.use('/image',imageRouter);
 app.use('/admin',adminRouter);
 
+// all the chat logic here for messanging still in work 
+
 io.on('connection',(socket)=>{
+    socket.join()
     console.log("triggered");
     socket.on('chat message',(msg)=>{
         console.log(msg);
         io.emit('chat message', msg);
-    })
-    
+    });  
 });
 
 
