@@ -23,13 +23,13 @@ router.get('/logout',(req, res)=>{
 
 router.post('/login', async (req, res)=>{
     let {email , password} = req.body;
-    let user = await userModel.findOne({email});
+    let user = await userModel.findOne({email}).select('-followers -following');
     if(user === null){
         return res.render('login',{msg : "No User Found"});
     }else{
         let validity = await bcrypt.compare(password ,user.password);
         if(validity){
-            let token = jwt.sign({email , userid : user._id}, process.env.JWT_KEY);
+            let token = jwt.sign({email , userid : user._id , username : user.username}, process.env.JWT_KEY);
             res.cookie("token",token);
             return res.redirect('/');
         }else{

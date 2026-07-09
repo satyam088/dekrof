@@ -63,49 +63,85 @@ router.get('/feed', isLoggedIn , async (req, res)=>{
     
 });
 
-router.get('/messages', isLoggedIn , async (req, res)=>{
-    console.log("At messages");
-    let user = await userModel.findOne({ email : req.user.email}).select('-followers -following');
-    let Chatusers = conversationModel.find({participants : user._id}).limit(20).sort({updatedAt : -1 });
-    res.render('chats', {Chatusers});
-    // console.log(chatusers);
-});
 
 router.get('/messages/:username', isLoggedIn , async (req, res) =>{
-    console.log("Malik chat khol do ");
+    // console.log("Malik chat khol do ");
+    let userToChatWith ;
     let user = await userModel.findOne({ email : req.user.email}).select('-followers -following');
-    let userToChatWith = await userModel.findOne({ username : req.params.username});
+    if(req.params.username!="home"){
+        userToChatWith = await userModel.findOne({ username : req.params.username});
+    }
     if(!userToChatWith){
         console.log('are galat user hai');
-        res.redirect(req.get('referer'));
-        return ;
     }else{
-        console.log("User to theek lag rha hai");
+        userToChatWith =  userToChatWith.toObject();
+        // console.log("User to theek lag rha hai");
         let conversation = await conversationModel.findOne({
             // write from chatgpt to ensure that there is only one to one conversation exists
             participants :{
-                $all : [user._id , userToChatWith._id ]
+                $all : [user._id , userToChatWith._id]
             },
             $expr: {
                 $eq: [{ $size: "$participants" }, 2]
             }
         });
+        // for new conversation 
         if(!conversation){
             let newConversation = await conversationModel.create({
                 participants : [req.user._id , userToChatWith._id],
             });
         }                    
     }
-     let Chatusers = await conversationModel.find({participants : user._id}).limit(20).sort({updatedAt : -1 });
-        console.log("YAHA TAK PAHUCH GYE MALIK < MESSAGE : /username");
+     let conversations = await conversationModel.find({participants : user._id}).limit(20).sort({updatedAt : -1 });
+     if(!userToChatWith){
+        let userToChatWithID = conversations[0].participants.find(id=>{
+            return  id.toString() !== user._id.toString();
+        });
+        userToChatWith = await userModel.findOne({_id : userToChatWithID});
+        // run nemotron 3 ultra free
+     }
+
+     conversations = await Promise.all(
+
+        conversations.map(async (conversation) =>{
+
+            conversation = conversation.toObject();
+
+            let otherUserId = conversation.participants.find((id)=>{
+                if(userToChatWith._id.toString()== id.toString()){
+                    userToChatWith.conversationId = conversation._id;
+                }
+                return id.toString() !== user._id.toString();
+            });
+
+            otherUserId = otherUserId.toString();
+
+            const otherUser = await userModel.findOne({_id : otherUserId}).select('name username profilepic _id');
+
+            let otherUserInfo = {
+                    name : otherUser.name ,
+                    profilepic : otherUser.profilepic,
+                    username : otherUser.username,
+                    _id : otherUser._id,
+                    conversationId : conversation._id
+            }
+            conversation.otherUserInfo = otherUserInfo;
+            return conversation ;
+
+        })
+    );
+
+        if(!userToChatWith.conversationId){
+            userToChatWith.conversationId = conversations[0]._id;
+        }
         try{
-            res.render('chats',{Chatusers , userToChatWith});
-            console.log("Render ho gya messages > chat with user");
-            return ;
+            res.render('chats',{conversations , userToChatWith  , currUser : user});
+            // console.log("Render ho gya messages > chat with user");
+            return;
         }catch(err){
             console.log(err.message);
+            return res.redirect('/home');
         }
-
 });
 
 

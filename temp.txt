@@ -1,8 +1,0 @@
- <%if(Chatusers && Chatusers.length > 1){%>
-                    <%Chatusers.forEach(user = >{%>
-                        <div class="user bg-zinc-700 h-16 w-full flex items-center">
-                            <img src="" alt="" class="w-16 rounded-full">
-                            <h1> <%=user.username %> </h1>
-                        </div>
-                    <%});%>
-                <%}%>

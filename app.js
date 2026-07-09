@@ -10,6 +10,7 @@ const fs = require('fs');
 const dbgr = require('debug')("development:app");
 const expressSession = require('express-session');
 const flash = require("connect-flash");
+const cookie = require("cookie");
 
 const adminRouter = require('./routes/adminRouter');
 const authRouter = require('./routes/authRouter');
@@ -18,6 +19,7 @@ const homeRouter = require('./routes/homeRouter');
 const imageRouter = require('./routes/imageRouter');
 const postRouter = require('./routes/postRouter');
 const userRouter = require('./routes/userRouter');
+const chatsRouter = require('./routes/chatsRouter');
 
 const connectDb = require('./config/db');
 const upload = require('./config/multerconfig');
@@ -25,6 +27,8 @@ const upload = require('./config/multerconfig');
 const userModel = require("./models/user");
 const postModel = require("./models/post");
 const commentModel = require("./models/comment");
+const conversationModel = require('./models/conversation');
+const messageModel = require('./models/message');
 
 
 connectDb();
@@ -54,20 +58,47 @@ app.use('/auth',authRouter);
 app.use('/comment',commentRouter);
 app.use('/image',imageRouter);
 app.use('/admin',adminRouter);
+app.use('/chats',chatsRouter);
 
 // all the chat logic here for messanging still in work 
 
 io.on('connection',(socket)=>{
-    socket.join()
-    console.log("triggered");
-    socket.on('chat message',(msg)=>{
-        console.log(msg);
-        io.emit('chat message', msg);
+    // console.log(socket.handshake.headers)
+     socket.on('Join your chat room', async (data) => {
+        try {
+            const rawCookie = socket.handshake.headers.cookie ;
+            let ParsedCookie;
+            ParsedCookie = cookie.parseCookie(rawCookie).token;
+            const roomId = await jwt.verify(ParsedCookie , process.env.JWT_KEY).username;
+            socket.join(roomId);   
+            console.log(`Socket ${socket.id} successfully joined room: ${roomId}`);
+            
+        } catch (error) {
+            console.error("Failed to join room:", error);
+        }
+    });
+
+    socket.on('chat message', async (msg)=>{
+        
+        const rawCookie = socket.handshake.headers.cookie ;
+        let ParsedCookie;
+        ParsedCookie = cookie.parseCookie(rawCookie).token;
+        const data= await jwt.verify(ParsedCookie , process.env.JWT_KEY);
+        io.to(data.username).emit('chat message', msg);
+        const receiverUser = await userModel.findOne({username : msg.receiver}).select('_id');
+        let message = await messageModel.create({
+            conversation : msg.conversation,
+            sender : data.userid,
+            receiver : receiverUser._id,
+            message : msg.message
+        });
+        io.to(msg.receiver).emit('chat message', message);
     });  
 });
 
 
 const notfound = require('./middlewares/notFound');
+const message = require('./models/message');
 
 app.use(notfound);
 

@@ -83,7 +83,7 @@ router.post('/create',async (req, res )=>{
                 filename : process.env.USER_DEFAULT_PIC_PUBLIC_ID
             }
             });
-        let token = await jwt.sign({email , userid : newUser._id}, process.env.JWT_KEY);
+        let token = await jwt.sign({email , userid : newUser._id , username}, process.env.JWT_KEY);
         res.cookie("token",token);
         return res.redirect('/');    
     }
