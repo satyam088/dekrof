@@ -92,6 +92,7 @@ io.on('connection',(socket)=>{
             receiver : receiverUser._id,
             message : msg.message
         });
+        console.log(msg);
         io.to(msg.receiver).emit('chat message', message);
     });  
 });

@@ -52,8 +52,9 @@ document.addEventListener('click',(e)=>{
 })();
 
 socket.on('chat message', (data)=>{
+    console.log(data);
     let alignment = 'self-start';
-    if(data.receiver == chatbox.dataset.inChatUser){
+    if(data.receiver === chatbox.dataset.inChatUser){
         alignment = 'self-end';
     }
     const time = new Date().toLocaleTimeString([], {
@@ -63,11 +64,15 @@ socket.on('chat message', (data)=>{
 
     let msg = document.createElement('div');
         msg.innerHTML = `
-            <p>${data.message}</p>
-            <span class="time text-xs text-zinc-500">${time}</span>
+           <div class="w-fit px-3 py-2 rounded-lg bg-zinc-700">
+                <p>${data.message}</p>
+                <span class="time text-right text-xs text-zinc-500">${time}</span>
+            </div>
         `;
-        msg.className = `bg-zinc-700 ${alignment} m-2`;
-        chat_messages.append(msg);
+        console.log(msg);
+    msg.className = `flex items-center gap-2 ${alignment} m-2`;
+    chat_messages.append(msg);
+    chat_messages.scrollTop = chat_messages.scrollHeight;
 });
 
 function loadMessages(messages){
@@ -89,8 +94,10 @@ function loadMessages(messages){
             </div>
         `;
         msg.className = `flex items-center gap-2 ${alignment} m-2  `;
-        chat_messages.prepend(msg);
+        loadChats.after(msg);
     });
+
+    chatbox.dataset.lastMessageId = messages[messages.length -1]._id;
 }
 
 const LoadMoreUSers= new IntersectionObserver(
@@ -100,10 +107,16 @@ const LoadMoreUSers= new IntersectionObserver(
             const lastMessageId = chatbox.dataset.lastMessageId
             const response = await fetch(`/chats/get/${conversationId}/${lastMessageId}`);
             const messages = await response.json();
-            loadMessages(messages);
+            loadMessages(messages); 
+            chat_messages.scrollTop = chat_messages.scrollHeight;
+            setTimeout(() => {
+                chat_messages.scrollTop = chat_messages.scrollHeight;
+            }, 500);           
         }
     }
 );
+
+
 
 if(loadChats){
     LoadMoreUSers.observe(loadChats);
