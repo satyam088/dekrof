@@ -84,8 +84,7 @@ io.on('connection',(socket)=>{
         let ParsedCookie;
         ParsedCookie = cookie.parseCookie(rawCookie).token;
         const data= await jwt.verify(ParsedCookie , process.env.JWT_KEY);
-        io.to(data.username).emit('chat message', msg);
-        const receiverUser = await userModel.findOne({username : msg.receiver}).select('_id');
+        const receiverUser = await userModel.findOne({_id : msg.receiver}).select('username');
         let message = await messageModel.create({
             conversation : msg.conversation,
             sender : data.userid,
@@ -93,7 +92,8 @@ io.on('connection',(socket)=>{
             message : msg.message
         });
         console.log(msg);
-        io.to(msg.receiver).emit('chat message', message);
+        io.to(data.username).emit('chat message', message);
+        io.to(receiverUser.username).emit('chat message', message);
     });  
 });
 

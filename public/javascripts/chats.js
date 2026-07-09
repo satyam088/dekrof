@@ -29,7 +29,7 @@ async function loadUserTOChatBox(user){
     if(userData){
         chat_messages.innerHTML = "";
         chatbox.dataset.conversationId = user.dataset.conversationId;
-        chatbox.dataset.inChatUser = username;
+        chatbox.dataset.inChatUser = user.dataset.userId;
         let profilePic = document.querySelector('.currUserProfilepic');
         let CurrUsername = chatbox.querySelector('.CurrUsername');
         let loadChats = chatbox.querySelector('.loadChats');
@@ -52,27 +52,33 @@ document.addEventListener('click',(e)=>{
 })();
 
 socket.on('chat message', (data)=>{
-    console.log(data);
-    let alignment = 'self-start';
-    if(data.receiver === chatbox.dataset.inChatUser){
-        alignment = 'self-end';
+    if(data.sender.toString()===chatbox.dataset.inChatUser.toString() || data.receiver.toString()===chatbox.dataset.inChatUser.toString() ){
+        console.log(data);
+        let alignment = 'self-start';
+        console.log(data.receiver === chatbox.dataset.inChatUser);
+        if(data.receiver === chatbox.dataset.inChatUser){
+            alignment = 'self-end';
+        }
+        const time = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        });
+    
+        let msg = document.createElement('div');
+            msg.innerHTML = `
+               <div class="w-fit px-3 py-2 rounded-lg bg-zinc-700">
+                    <p>${data.message}</p>
+                    <span class="time text-right text-xs text-zinc-500">${time}</span>
+                </div>
+            `;
+            console.log(msg);
+        msg.className = `flex items-center gap-2 ${alignment} m-2`;
+        chat_messages.append(msg);
+        chat_messages.scrollTop = chat_messages.scrollHeight;
+    }else{
+        console.log("Message is not processed in current chat");
     }
-    const time = new Date().toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    });
 
-    let msg = document.createElement('div');
-        msg.innerHTML = `
-           <div class="w-fit px-3 py-2 rounded-lg bg-zinc-700">
-                <p>${data.message}</p>
-                <span class="time text-right text-xs text-zinc-500">${time}</span>
-            </div>
-        `;
-        console.log(msg);
-    msg.className = `flex items-center gap-2 ${alignment} m-2`;
-    chat_messages.append(msg);
-    chat_messages.scrollTop = chat_messages.scrollHeight;
 });
 
 function loadMessages(messages){
@@ -97,8 +103,9 @@ function loadMessages(messages){
         loadChats.after(msg);
     });
 
-    chatbox.dataset.lastMessageId = messages[messages.length -1]._id;
-}
+    if(messages && messages.length >0)
+        chatbox.dataset.lastMessageId = messages[messages.length -1]._id;
+    }
 
 const LoadMoreUSers= new IntersectionObserver(
     async (entries) =>{
