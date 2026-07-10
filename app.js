@@ -8,7 +8,8 @@ const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const dbgr = require('debug')("development:app");
-const expressSession = require('express-session');
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const cookie = require("cookie");
 
@@ -43,10 +44,16 @@ app.use(express.static(path.join(__dirname , "public")));
 app.set('view engine','ejs');
 app.use(cookieParser());
 app.use(
-    expressSession({
-        resave : false,
-        saveUninitialized : false,
-        secret : process.env.EXPRESS_SESSION_SECRET,
+    session({
+        secret: process.env.EXPRESS_SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        store: MongoStore.create({
+            mongoUrl: process.env.mongodbURL
+        }),
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24 // 1 day
+        }
     })
 );
 app.use(flash());
