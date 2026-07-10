@@ -1,16 +1,12 @@
-const multer = require('multer');
-const path = require('path');
+const multer = require("multer");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname ,'../public/images/uploads'));
-  },
-  filename: function (req, file, cb) {
-        fn = Date.now() + path.extname(file.originalname);
-        cb(null, fn);
-  }
-})
+const storage = multer.memoryStorage();
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10 MB
+    }
+});
 
-module.exports = upload ;
+module.exports = upload;
