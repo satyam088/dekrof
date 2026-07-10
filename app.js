@@ -94,6 +94,9 @@ io.on('connection',(socket)=>{
         console.log(msg);
         io.to(data.username).emit('chat message', message);
         io.to(receiverUser.username).emit('chat message', message);
+        let ConversationToBeUpdated = await conversationModel.findOneAndUpdate({_id : msg.conversation}, {lastMessage : message._id}).select('lastMessage');
+
+        await ConversationToBeUpdated.save();
     });  
 });
 

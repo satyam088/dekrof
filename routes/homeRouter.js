@@ -84,7 +84,7 @@ router.get('/messages/:username', isLoggedIn , async (req, res) =>{
             $expr: {
                 $eq: [{ $size: "$participants" }, 2]
             }
-        });
+        }).populate('lastMessage');
         // for new conversation 
         if(!conversation){
             let newConversation = await conversationModel.create({
@@ -93,6 +93,11 @@ router.get('/messages/:username', isLoggedIn , async (req, res) =>{
         }                    
     }
      let conversations = await conversationModel.find({participants : user._id}).limit(20).sort({updatedAt : -1 });
+
+     if(!conversations || conversations.length ==0){
+        return res.render('chats',{conversations :[] , userToChatWith :null , currUser : user});
+     }
+
      if(!userToChatWith){
         let userToChatWithID = conversations[0].participants.find(id=>{
             return  id.toString() !== user._id.toString();
@@ -104,7 +109,6 @@ router.get('/messages/:username', isLoggedIn , async (req, res) =>{
      conversations = await Promise.all(
 
         conversations.map(async (conversation) =>{
-
             conversation = conversation.toObject();
 
             let otherUserId = conversation.participants.find((id)=>{

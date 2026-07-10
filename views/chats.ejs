@@ -26,13 +26,15 @@
                             <img src="<%=conversation.otherUserInfo.profilepic.url%>" alt="" class="w-10 rounded-full">
                             <div class=" flex flex-col gap-1  justify-center">
                                 <h1><%=conversation.otherUserInfo.name%> </h1>
-                                <p class="text-xs text-zinc-500"><%=conversation.lastMessage%></p>
                             </div>
                         </div>
                     <%});%>
+                <%}else{%>
+                    <div>No previous conversation history , go to anyuser profile and start chatting</div>
                 <%}%>
 
             </div>
+            <%if(userToChatWith){%>
             <div class="chatbox w-full flex-1 bg-zinc-800/30 backdrop-blur-md shadow-lg border-2 border-zinc-700 h-full mx-3 flex flex-col rounded-lg overflow-hidden"
                     data-conversation-id="<%=userToChatWith.conversationId%>"
                     data-in-chat-user="<%=userToChatWith._id%>"
@@ -62,6 +64,7 @@
                 </div>
                 </form>
             </div>
+            <%}%>
         </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
