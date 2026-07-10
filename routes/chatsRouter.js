@@ -17,7 +17,6 @@ router.get('/get/:conversationId/:lastMessageId' , isLoggedIn , async(req , res)
     }
     let lastMessage ;
     if(req.params.lastMessageId!=="abc"){
-        console.log("HEY bro");
         lastMessage = await messageModel.findOne({
             _id : req.params.lastMessageId,
             conversation: req.params.conversationId

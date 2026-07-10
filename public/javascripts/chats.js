@@ -6,6 +6,7 @@ const chatbox = document.querySelector('.chatbox');
 const loadChats = document.querySelector('.loadChats');
 const root = document.querySelector('.root');
 
+
 form.addEventListener('submit', (e)=>{
     e.preventDefault();
     if(message.value.trim()){
@@ -17,6 +18,23 @@ form.addEventListener('submit', (e)=>{
         message.value = '';
     }
 });
+
+
+async function loadNewChats(){
+        const conversationId = chatbox.dataset.conversationId;
+        const lastMessageId = chatbox.dataset.lastMessageId;
+        console.log(conversationId);
+        const response = await fetch(`/chats/get/${conversationId}/${lastMessageId}`);
+        const messages = await response.json();
+        console.log(messages);
+        loadMessages(messages); 
+        chat_messages.scrollTop = chat_messages.scrollHeight;
+        setTimeout(() => {
+            chat_messages.scrollTop = chat_messages.scrollHeight;
+        }, 500);
+    return ;
+}
+
 async function loadUserTOChatBox(user){
     let username = user.dataset.username;
     let ConversationId = user.dataset.conversationId;
@@ -27,16 +45,18 @@ async function loadUserTOChatBox(user){
     }
 
     if(userData){
-        chat_messages.innerHTML = "";
+        while (chat_messages.children.length > 1) {
+            chat_messages.removeChild(chat_messages.lastElementChild);
+        }
         chatbox.dataset.conversationId = user.dataset.conversationId;
         chatbox.dataset.inChatUser = user.dataset.userId;
+        chatbox.dataset.lastMessageId = "abc";
         let profilePic = document.querySelector('.currUserProfilepic');
         let CurrUsername = chatbox.querySelector('.CurrUsername');
-        let loadChats = chatbox.querySelector('.loadChats');
         profilePic.setAttribute('src',userData.profilepic.url);
         CurrUsername.setAttribute('href',`/user/view/${username}`);
         CurrUsername.textContent = username;
-        // getChats(user.dataset.conversationId , "nopreviousmsg");
+        loadNewChats();
     }
 }
 
@@ -52,7 +72,7 @@ document.addEventListener('click',(e)=>{
 })();
 
 socket.on('chat message', (data)=>{
-    if(data.sender.toString()===chatbox.dataset.inChatUser.toString() || data.receiver.toString()===chatbox.dataset.inChatUser.toString() ){
+    if(data.sender.toString()===chatbox.dataset.inChatUser.toString() || data.receiver.toString()===chatbox.dataset.inChatUser.toString()){
         console.log(data);
         let alignment = 'self-start';
         console.log(data.receiver === chatbox.dataset.inChatUser);
@@ -82,6 +102,7 @@ socket.on('chat message', (data)=>{
 });
 
 function loadMessages(messages){
+    // console.log(messages);
     messages.forEach(message =>{
         let alignment = 'justify-start';
         if(message.sender.username === root.dataset.curruserName){
@@ -109,16 +130,9 @@ function loadMessages(messages){
 
 const LoadMoreUSers= new IntersectionObserver(
     async (entries) =>{
+        console.log("Ovserving..");
         if(entries[0].isIntersecting){
-            const conversationId = chatbox.dataset.conversationId;
-            const lastMessageId = chatbox.dataset.lastMessageId
-            const response = await fetch(`/chats/get/${conversationId}/${lastMessageId}`);
-            const messages = await response.json();
-            loadMessages(messages); 
-            chat_messages.scrollTop = chat_messages.scrollHeight;
-            setTimeout(() => {
-                chat_messages.scrollTop = chat_messages.scrollHeight;
-            }, 500);           
+            loadNewChats();        
         }
     }
 );
