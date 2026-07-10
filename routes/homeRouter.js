@@ -84,7 +84,7 @@ router.get('/messages/:username', isLoggedIn , async (req, res) =>{
             $expr: {
                 $eq: [{ $size: "$participants" }, 2]
             }
-        }).populate('lastMessage');
+        });
         // for new conversation 
         if(!conversation){
             let newConversation = await conversationModel.create({
