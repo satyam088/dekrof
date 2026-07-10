@@ -6,7 +6,7 @@ const messageModel = require('../models/message');
 const conversationModel = require('../models/conversation');
 
 router.get('/get/:conversationId/:lastMessageId' , isLoggedIn , async(req , res)=>{
-    console.log("Are bauji msg mang rha hai");
+    // console.log("Are bauji msg mang rha hai");
     let conversation = await conversationModel.findOne({
         _id : req.params.conversationId,
         participants: req.user._id
@@ -42,7 +42,7 @@ router.get('/get/:conversationId/:lastMessageId' , isLoggedIn , async(req , res)
             .populate('receiver','username _id');
     }
     // console.log(req.params.lastMessageId);
-    console.log("All message sent");
+    // console.log("All message sent");
     // console.log(Oldermessages);
     return res.json(Oldermessages);
 })

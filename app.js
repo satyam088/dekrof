@@ -8,8 +8,10 @@ const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const dbgr = require('debug')("development:app");
+
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const { MongoStore } = require("connect-mongo");
+
 const flash = require("connect-flash");
 const cookie = require("cookie");
 
@@ -32,8 +34,6 @@ const conversationModel = require('./models/conversation');
 const messageModel = require('./models/message');
 
 
-connectDb();
-
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -52,7 +52,7 @@ app.use(
             mongoUrl: process.env.mongodbURL
         }),
         cookie: {
-            maxAge: 1000 * 60 * 60 * 24 // 1 day
+            maxAge: 1000 * 60 * 60 * 24
         }
     })
 );
@@ -113,4 +113,14 @@ const message = require('./models/message');
 
 app.use(notfound);
 
-server.listen(3000 , ()=>{ console.log("Server running")});
+async function startServer() {
+    await connectDb();
+
+    const PORT = process.env.PORT || 3000;
+
+    server.listen(PORT, () => {
+        console.log(`Server running on ${PORT}`);
+    });
+}
+
+startServer();

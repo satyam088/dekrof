@@ -11,18 +11,6 @@ const commentModel = require("../models/comment");
 const messageModel = require('../models/message');
 const conversationModel = require('../models/conversation');
 
-// async function abc() {
-//     const users = await userModel.find();
-
-//     for (const user of users) {
-//         user.followers =[],
-//           user.followerCount =0;
-//             user.following =[];
-//             user.followingCount  =0 ;
-//             user.postCount =0;
-//         await user.save();
-//     }
-// }
 
 router.get('/',async (req,res)=>{
     // await abc();
