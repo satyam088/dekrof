@@ -117,7 +117,7 @@ async function handelPostDelete(deletePostBtn){
 }
 if(uploadPostForm){
     uploadPostForm.addEventListener('submit' , (e)=>{
-    console.log('clicked');
+    // console.log('clicked');
     formErrorMsg.innerHTML = "";
 
     if(images.files.length == 0 && content.value.trim()===""){

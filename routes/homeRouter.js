@@ -17,6 +17,10 @@ router.get('/',async (req,res)=>{
     res.redirect('/home');
 })
 
+router.get('/helpAndSupport', (req, res)=>{
+    return res.render('helpAndSupport');
+});
+
 router.get('/home' ,isLoggedIn , async(req, res)=>{
     let useremail = req.user.email;
     let user = await userModel.findOne({email : useremail});
@@ -60,7 +64,7 @@ router.get('/messages/:username', isLoggedIn , async (req, res) =>{
         userToChatWith = await userModel.findOne({ username : req.params.username});
     }
     if(!userToChatWith){
-        console.log('are galat user hai');
+        // console.log('are galat user hai');
     }else{
         userToChatWith =  userToChatWith.toObject();
         // console.log("User to theek lag rha hai");

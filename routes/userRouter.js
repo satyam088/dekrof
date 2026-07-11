@@ -59,7 +59,22 @@ router.get('/search/:username', isLoggedIn , async (req, res , next)=>{
 
 
 router.post('/create',async (req, res )=>{
-    let {email , password , username , name , age } = req.body ;
+    let {email , password , username , name , age } = req.body;
+    age = Number(req.body.age);
+    
+    if(username.length <4){
+        return res.render('register',{msg : "username must atleast of length 4"});
+    }else if(typeof age !== "number"){
+        return res.render('register',{msg : "age should be only number"});
+    }else if(age <18){
+        return res.render('register',{msg : "you must be atleast 18 to create account"});
+    }else if(age >120){
+        return res.render('register',{msg : "Invalid age"});
+    }else if(!email.includes("@")){
+        return res.render('register',{msg : "Invalid email"});
+    }else if(password.length <5){
+        return res.render('register',{msg : "Passowrd must be of length of 5 minimum"});
+    }
 
     let emailUser = await userModel.findOne({email});
     let usernameUser = await userModel.findOne({username});
@@ -71,21 +86,25 @@ router.post('/create',async (req, res )=>{
     }else if(usernameUser){
         return res.render('register',{msg : "username is alredy taken"});
     }else{
-        let hashpass = await bcrypt.hash(password , 10);
-        let newUser = await userModel.create({
-            email ,
-            password : hashpass ,
-            username ,
-            name ,
-            age ,
-            profilepic :{
-                url : process.env.USER_DEFAULT_PIC,
-                filename : process.env.USER_DEFAULT_PIC_PUBLIC_ID
-            }
-            });
-        let token = await jwt.sign({email , userid : newUser._id , username}, process.env.JWT_KEY);
-        res.cookie("token",token);
-        return res.redirect('/');    
+        try{
+            let hashpass = await bcrypt.hash(password , 10);
+            let newUser = await userModel.create({
+                email ,
+                password : hashpass ,
+                username ,
+                name ,
+                age ,
+                profilepic :{
+                    url : process.env.USER_DEFAULT_PIC,
+                    filename : process.env.USER_DEFAULT_PIC_PUBLIC_ID
+                }
+                });
+            let token = await jwt.sign({email , userid : newUser._id , username}, process.env.JWT_KEY);
+            res.cookie("token",token);
+            return res.redirect('/');  
+        }catch(err){
+            return res.render('register',{msg : "failed to create user account"});
+        }
     }
 });
 

@@ -10,15 +10,15 @@ const postModel = require("../models/post");
 const commentModel = require("../models/comment");
 
 router.get('/login',(req,res)=>{
-    return res.render('login');
+    return res.render('login',{msg : ""});
 });
 router.get('/register',(req, res)=>{
-    return res.render('register');
+    return res.render('register',{msg : ""});
 });
 
 router.get('/logout',(req, res)=>{
     res.cookie("token","");
-    res.redirect('login')
+    res.redirect('login');
 });
 
 router.post('/login', async (req, res)=>{

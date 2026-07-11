@@ -10,7 +10,7 @@ async function isLoggedIn(req ,res , next){
         req.user = user;
         return next();
     }catch(err){
-        return res.render('register');
+        return res.redirect('/auth/register');
     }
 }
 
