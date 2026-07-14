@@ -99,8 +99,21 @@ io.on('connection',(socket)=>{
             message : msg.message
         });
         console.log(msg);
-        io.to(data.username).emit('chat message', message);
-        io.to(receiverUser.username).emit('chat message', message);
+        
+        try{
+            io.to(data.username).emit('chat message', message);
+            console.log("msg send to the sender");
+        }catch(err){
+            console.log("Failed to send msg to sender");
+        }
+        try{
+            io.to(receiverUser.username).emit('chat message', message);
+            console.log("msg send to the sender");
+        }catch(err){
+            console.log("Failed to send msg to reciver");
+        }
+
+        console.log(data.username," ",receiverUser.username);
         let ConversationToBeUpdated = await conversationModel.findOneAndUpdate({_id : msg.conversation}, {lastMessage : message._id}).select('lastMessage');
 
         await ConversationToBeUpdated.save();
