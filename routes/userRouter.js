@@ -109,7 +109,7 @@ router.post('/create',async (req, res )=>{
 });
 
 router.post('/update', isLoggedIn ,upload.single('image'), uploadToCloudinary, async (req, res)=>{
-    let {email , password , username , name , age } = req.body;
+    let { password , name , age } = req.body;
     let user =  await userModel.findOne({email : req.user.email});
     
     if(req.body.delete && user.profilepic.url != process.env.USER_DEFAULT_PIC ){
@@ -122,8 +122,6 @@ router.post('/update', isLoggedIn ,upload.single('image'), uploadToCloudinary, a
     }
     let updateUser = await userModel.findOneAndUpdate({email : req.user.email} ,{
         name : name,
-        email : email,
-        username : username ,
         age :age,
         profilepic : req.image,
     });
