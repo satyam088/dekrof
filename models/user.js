@@ -41,7 +41,8 @@ let userSchema = mongoose.Schema({
     postCount :{
         type : Number ,
         default : 0,
-    }
+    },
+    bio : String 
 
 },{
     timestamps: true
