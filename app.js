@@ -4,13 +4,13 @@ const http = require('http');
 const { Server } = require("socket.io");
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
-const fs = require('fs');
-const dbgr = require('debug')("development:app");
+// const fs = require('fs');
+// const dbgr = require('debug')("development:app");
 
-const session = require("express-session");
-const { MongoStore } = require("connect-mongo");
+// const session = require("express-session");
+// const { MongoStore } = require("connect-mongo");
 
 const flash = require("connect-flash");
 const cookie = require("cookie");
@@ -25,11 +25,11 @@ const userRouter = require('./routes/userRouter');
 const chatsRouter = require('./routes/chatsRouter');
 
 const connectDb = require('./config/db');
-const upload = require('./config/multerconfig');
+// const upload = require('./config/multerconfig');
 
 const userModel = require("./models/user");
-const postModel = require("./models/post");
-const commentModel = require("./models/comment");
+// const postModel = require("./models/post");
+// const commentModel = require("./models/comment");
 const conversationModel = require('./models/conversation');
 const messageModel = require('./models/message');
 
@@ -43,19 +43,7 @@ app.use(express.urlencoded({extended : true}));
 app.use(express.static(path.join(__dirname , "public")));
 app.set('view engine','ejs');
 app.use(cookieParser());
-app.use(
-    session({
-        secret: process.env.EXPRESS_SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        store: MongoStore.create({
-            mongoUrl: process.env.mongodbURL
-        }),
-        cookie: {
-            maxAge: 1000 * 60 * 60 * 24
-        }
-    })
-);
+
 app.use(flash());
 
 app.use('/',homeRouter);
@@ -66,6 +54,10 @@ app.use('/comment',commentRouter);
 app.use('/image',imageRouter);
 app.use('/admin',adminRouter);
 app.use('/chats',chatsRouter);
+
+app.use('/api/health' , (req ,res)=>{
+    res.status(200).send({"msg":"API IS running"});
+})
 
 // all the chat logic here for messanging still in work 
 
